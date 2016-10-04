@@ -1,6 +1,6 @@
 FROM php:5.6-apache
 
-RUN a2enmod rewrite expires
+RUN a2enmod rewrite expires ssl
 
 # install the PHP extensions we need
 RUN apt-get update && apt-get install -y libxslt1.1 libxslt-dev libpng12-dev libjpeg-dev && rm -rf /var/lib/apt/lists/* \
@@ -31,6 +31,10 @@ RUN curl -o wordpress.tar.gz -SL https://wordpress.org/wordpress-${WORDPRESS_VER
 	&& chown -R www-data:www-data /usr/src/wordpress
 
 COPY docker-entrypoint.sh /entrypoint.sh
+
+COPY php.dev.ini /usr/local/etc/php/php.ini
+
+EXPOSE 443
 
 # grr, ENTRYPOINT resets CMD now
 ENTRYPOINT ["/entrypoint.sh"]
